@@ -1,8 +1,8 @@
 <idea-plugin version="2">
-  <id>com.znshadow.viewbinder</id>
-  <name>View binder</name>
+  <id>com.your.company.unique.plugin.id</id>
+  <name>Plugin display name here</name>
   <version>1.0</version>
-  <vendor email="zakharchenkoWork@gmail.com" url="127.0.0.1">LocalHost</vendor>
+  <vendor email="zakharchenkoWork@gmail.com" url="127.0.0.1">localhost</vendor>
 
   <description><![CDATA[
       Enter short description for your plugin here.<br>
@@ -27,11 +27,10 @@
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
   </extensions>
-
   <actions>
     <group id="MyPlugin.SampleMenu">
       <add-to-group group-id="MainMenu" anchor="last"  />
-      <action id="Myplugin.Textboxes" class="test.TextBoxes">
+      <action id="Myplugin.Textboxes" class="main.TextBoxes">
         <keyboard-shortcut keymap="$default" first-keystroke="ctrl shift D"/>
       </action>
     </group>
