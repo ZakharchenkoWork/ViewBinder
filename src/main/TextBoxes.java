@@ -48,28 +48,45 @@ public class TextBoxes extends AnAction {
             }
             String[] codeParts = viewCode.split(" ");
             String viewClassName = codeParts[0].replace("<", "");
-            String viewIdName = "";
-            for (int i = 0; i < codeParts.length; i++) {
-                if (codeParts[i].contains("android:id")) {
-                    String idCodePart = codeParts[i].split("\"")[1];
-                    viewIdName = idCodePart.replace("@+id/", "");
-                    break;
-                }
-            }
 
-            if (viewIdName.length() == 0) {
-                //Messages.showWarningDialog("No id", "Oops");
-                HintManager.getInstance().showInformationHint(editor, "Please set ID for this view");
+            String viewIdName = "";
+            if (viewClassName.equals("string")) {
+                for (int i = 0; i < codeParts.length; i++) {
+                    if (codeParts[i].contains("name")) {
+                        viewIdName = codeParts[i].split("\"")[1];
+                        break;
+                    }
+                }
+                copyTextToClipboard(editor, viewIdName);
             } else {
-                viewClassName = getClass(viewClassName);
-                String result = viewClassName + " " + viewIdName + " = (" + viewClassName+ ") findViewById(R.id." + viewIdName + ");";
-                StringSelection stringSelection = new StringSelection(result);
-                Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
-                clpbrd.setContents(stringSelection, null);
-                HintManager.getInstance().showInformationHint(editor, "Added to clipboard");
+                for (int i = 0; i < codeParts.length; i++) {
+                    if (codeParts[i].contains("android:id")) {
+                        String idCodePart = codeParts[i].split("\"")[1];
+                        viewIdName = idCodePart.replace("@+id/", "");
+                        break;
+                    }
+                }
+
+                if (viewIdName.length() == 0) {
+                    //Messages.showWarningDialog("No id", "Oops");
+                    HintManager.getInstance().showInformationHint(editor, "Please set ID for this view");
+                } else {
+                    viewClassName = getClass(viewClassName);
+                    String result = viewClassName + " " + viewIdName + " = (" + viewClassName + ") findViewById(R.id." + viewIdName + ");";
+                    copyTextToClipboard(editor, result);
+                }
             }
         }
     }
+
+    private void copyTextToClipboard(Editor editor, String text) {
+        StringSelection stringSelection = new StringSelection(text);
+        Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clpbrd.setContents(stringSelection, null);
+        HintManager.getInstance().showInformationHint(editor, "Added to clipboard");
+    }
+
+
     private String getClass(String viewClassName){
 
         String[] parts = viewClassName.trim().replace(".","---").split("---");
