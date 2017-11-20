@@ -11,6 +11,10 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.InputValidator;
 import com.intellij.openapi.ui.Messages;
 
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+
 public class TextBoxes extends AnAction {
     // If you register the action from Java code, this constructor is used to set the menu item name
     // (optionally, you can specify the menu description and an icon to display next to the menu item).
@@ -57,22 +61,23 @@ public class TextBoxes extends AnAction {
                 //Messages.showWarningDialog("No id", "Oops");
                 HintManager.getInstance().showInformationHint(editor, "Please set ID for this view");
             } else {
-
-                String result = viewClassName + " " + viewIdName + " = (" + viewClassName.replace(" ", "") + ") findViewById(R.id." + viewIdName + ");";
-                Messages.showInputDialog(project, "Copy code below and past it to your java file", "View Binder", null, result, new InputValidator() {
-                    @Override
-                    public boolean checkInput(String s) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean canClose(String s) {
-                        return false;
-                    }
-                });
+                viewClassName = getClass(viewClassName);
+                String result = viewClassName + " " + viewIdName + " = (" + viewClassName+ ") findViewById(R.id." + viewIdName + ");";
+                StringSelection stringSelection = new StringSelection(result);
+                Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
+                clpbrd.setContents(stringSelection, null);
+                HintManager.getInstance().showInformationHint(editor, "Added to clipboard");
             }
         }
+    }
+    private String getClass(String viewClassName){
 
+        String[] parts = viewClassName.trim().replace(".","---").split("---");
+        if(parts.length != 0) {
+            return parts[parts.length - 1];
+        } else {
+            return viewClassName;
+        }
 
     }
 }
